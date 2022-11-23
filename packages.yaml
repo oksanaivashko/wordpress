@@ -1,0 +1,30 @@
+---
+- name: Install and Update Packages
+  hosts: webserver
+  gather_facts: yes
+  become: yes
+  tasks: 
+    - name: Update Packages
+      when: ansible_facts["pkg_mgr"] ==  "dnf"
+      dnf:
+        name: "*"
+        state: latest
+
+    - name: Install Packages
+      when: ansible_facts["pkg_mgr"] ==  "dnf"
+      dnf:
+        name: epel-release
+      register: task_result
+
+    - name: Install vim, curl, wget, git
+      when: 
+        - ansible_facts["pkg_mgr"] ==  "dnf"
+        - task_result is succeeded
+      dnf:
+        name: 
+          - vim
+          - curl
+          - wget
+          - git
+        state: latest
+    

@@ -1,0 +1,13 @@
+--- 
+- name: Install Apache Start and Enable Apache
+  hosts: webserver
+  tasks:
+    - name: Inatall Apache
+      yum:
+        name: httpd
+        state: installed
+    - name: Start and Enable Apache
+      systemd:
+        name: httpd
+        state: started
+        enabled: yes

@@ -1,0 +1,26 @@
+facts: yes
+
+apache_package_name: httpd
+
+apache_service_name: httpd
+
+# PHP Packages
+php_packages: 
+  - php
+  - php-mysqlnd
+  - php-dom 
+  - php-simplexml
+  - php-xml
+  - php-xmlreader
+  - php-curl
+  - php-exif
+  - php-ftp
+  - php-gd
+  - php-iconv
+  - php-json
+  - php-mbstring
+  - php-posix
+  - php-sockets
+  - php-tokenizer
+
+  

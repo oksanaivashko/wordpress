@@ -1,0 +1,25 @@
+---
+- name: Add user ansible
+  hosts: webserver
+  gather_facts: yes
+  vars: 
+    - user_pass: "$4$myrandomsalt$qMpBEIY5agCrLIJnNNsaXIg/nxU3TZN/13R2cx8CHlVriSdozJ52Q1eYvEVCDKG0QMiCKiZQAaB6ZkRuufnTmg/"
+  tasks: 
+    - name: add user 
+      user: 
+        name: ansible
+        uid: 1800
+        groups: wheel
+        password: "{{ user_pass }}"
+
+
+
+
+    #- name: copy ssh key
+    #  copy:
+    #    src: /home/ansible/.ssh/id_rsa
+    #    dest: /home/ansible/.ssh/known_hosts
+    #    owner: ansible
+    #    group: wheel
+    #    remote_src: yes
+      
