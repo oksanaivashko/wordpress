@@ -21,3 +21,28 @@ php_packages:
   - php-posix
   - php-sockets
   - php-tokenizer
+
+
+mariadb_package_name: 
+  - mariadb-server
+  - net-tools
+  - python3-pymysql
+mariadb_service_name: MariaDB-client
+
+
+packages: 
+  - dnf-utils
+  - php
+  - php-common
+  - php-mysqlnd
+  - php-cli
+  - php-curl
+  - php-gd
+  - php-mbstring
+  - php-xml
+  - python3
+  - python3-pip
+  - build-essential
+  - libmysqlclient-dev
+
+mysql_passwd: world2022
