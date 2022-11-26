@@ -1,0 +1,42 @@
+facts: yes
+apache_package_name: httpd
+apache_service_name: httpd
+
+php_packages: 
+  - php
+  - php-mysqlnd
+  - php-dom 
+  - php-simplexml
+  - php-xml
+  - php-xmlreader
+  - php-curl
+  - php-exif
+  - php-ftp
+  - php-gd
+  - php-iconv
+  - php-json
+  - php-mbstring
+  - php-posix
+  - php-sockets
+  - php-tokenizer
+
+
+mariadb_package_name: mariadb-server
+mariadb_service_name: MariaDB-client
+
+packages: 
+  - dnf-utils
+  - php
+  - php-common
+  - php-mysqlnd
+  - php-cli
+  - php-curl
+  - php-gd
+  - php-mbstring
+  - php-xml
+  - python3
+  - python3-pip
+  - build-essential
+  - libmysqlclient-dev
+  - python-
+mysql_passwd: world2022

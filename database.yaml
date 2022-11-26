@@ -1,0 +1,49 @@
+---
+- name: Setup database
+  hosts: database
+  gather_facts: yes
+  become: yes
+  vars_files: vars/lamp_vars.yaml
+  tasks: 
+    - name: Install MariaDB
+      when: ansible_facts['distribution'] == "Ubuntu"
+      #when: ansible_facts['pkg_mgr'] == "apt"
+      apt:
+        update_cache: yes
+        name: "{{ mariadb_package_name }}"
+        state: present
+
+    - name: "Install ansible python3 mysql dependency"
+      when: ansible_facts['distribution'] == "Ubuntu"
+      apt:
+        name: python3-mysqldb
+        state: present
+
+    - name: Start & Enable MariaDB
+      when: ansible_facts['service_mgr'] == "systemd"
+      systemd:
+        name: "{{ mariadb_service_name }}"
+        state: started
+        enabled: yes
+      
+    - name: Removes all anonymous user accounts
+      mysql_user:
+        name: ''
+        host_all: yes
+        state: absent
+    
+    - name: Create a new database with name 'wpdb'
+      mysql_db:
+        name: wpdb
+        state: present
+        # login_unix_socket: /var/run/mysqld/mysqld.sock
+    
+    - name: Create database user with name and password with all database privileges
+      mysql_user:
+        name: wpuser
+        password: "{{mysql_passwd}}"
+        priv: '*.*:ALL,GRANT'
+        state: present
+        host: 142.93.55.62
+        login_host: 137.184.109.165
+        # login_unix_socket: /var/run/mysqld/mysqld.sock

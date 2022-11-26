@@ -1,6 +1,6 @@
 ---
 - name: Ping webserver
-  hosts: webserver
+  hosts: webserver database
   gather_facts: false
   tasks:
     - name: Ping 

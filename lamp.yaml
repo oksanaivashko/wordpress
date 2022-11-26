@@ -1,12 +1,11 @@
 ---
-- name: Set LAMP and Install Wordpress
+- name: Setup LAMP and Install Wordpress
   hosts: webserver
-  gather_facts: "{{ facts }}"
-  vars_files:
-    - vars/lamp_vars.yaml
-  become: yes
-  tasks: 
-    - name: Setup Apache and Wordpress on CentOS8
+  gather_facts: yes
+  vars_files: vars/lamp_vars.yaml
+  become: yes 
+  tasks:
+    - name: Setup webserver
       block: 
         - name: Install Apache
           when: ansible_facts['pkg_mgr'] == "dnf"
@@ -14,23 +13,30 @@
             name: "{{ apache_package_name }}"
             state: latest
         
-        - name: Start and Enable Apache
-          when: ansible_facts['pkg_mgr'] == "systemd"
-          systemd: 
+        - name: Start & Enable Apache
+          when: ansible_facts['service_mgr'] == "systemd"
+          systemd:
             name: "{{ apache_service_name }}"
             state: started
             enabled: yes
 
-        - name: Install PHP and Dependenies 
+        - name: Install PHP and Dependencies
           when: ansible_facts['pkg_mgr'] == "dnf"
-          dnf: 
+          dnf:
             name: "{{ php_packages }}"
             state: latest
-
+        
+        
         - name: Install WordPress
           unarchive:
             src: https://wordpress.org/latest.tar.gz
             dest: /tmp/
+            remote_src: yes
+        
+        - name: Copy Wordpress files to /var/www/html/
+          copy:
+            src: /tmp/wordpress/
+            dest: /var/www/html/
             remote_src: yes
 
         - name: Change ownership of /var/www/html
@@ -41,7 +47,24 @@
             owner: apache
             group: apache
           notify: Restart Apache
-
+  
       when:
         - ansible_facts['distribution'] == "CentOS"
         - ansible_facts['distribution_major_version'] == "8"
+      
+  handlers:
+    - name: Restart Apache
+      when: ansible_facts['service_mgr'] == "systemd"
+      systemd:
+        name: "{{ apache_service_name }}"
+        state: restarted
+
+    - name: Install Mariadb-client
+      when:
+        - ansible_facts['distribution'] == "CentOS"
+        - ansible_facts['distribution_major_version'] == "8"
+      #when: ansible_facts['pkg_mgr'] == "dnf"
+      dnf:
+        name: "{{ mariadb_service_name }}"
+        state: latest
+        enabled: yes

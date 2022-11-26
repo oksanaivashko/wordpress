@@ -1,25 +1,60 @@
 ---
-- name: Add user ansible
-  hosts: webserver
+- name: Add ansible user
+  hosts: 
+    - webserver 
+    - database
+    
   gather_facts: yes
-  vars: 
-    - user_pass: "$4$myrandomsalt$qMpBEIY5agCrLIJnNNsaXIg/nxU3TZN/13R2cx8CHlVriSdozJ52Q1eYvEVCDKG0QMiCKiZQAaB6ZkRuufnTmg/"
   tasks: 
-    - name: add user 
-      user: 
+    - name: Add ansible user to webserver
+      when:
+        - ansible_facts['distribution'] == "CentOS"
+        - ansible_facts['distribution_major_version'] == "8" 
+      user:
         name: ansible
-        uid: 1800
         groups: wheel
-        password: "{{ user_pass }}"
+        append: yes
+        state: present
+        createhome: yes
+        shell: /bin/bash
+    
+    - name: Add ansible user to database
+      when:
+        - ansible_facts['distribution'] == "Ubuntu"
+        - ansible_facts['distribution_major_version'] == "20" 
+      user:
+        name: ansible
+        groups: sudo
+        append: yes
+        state: present
+        createhome: yes
+        shell: /bin/bash
 
-
-
-
-    #- name: copy ssh key
-    #  copy:
-    #    src: /home/ansible/.ssh/id_rsa
-    #    dest: /home/ansible/.ssh/known_hosts
-    #    owner: ansible
-    #    group: wheel
-    #    remote_src: yes
+    - name: Set up authorized key for ansible user
+      authorized_key: user=ansible key="{{ item }}"
+      with_file:
+        - /home/ansible/.ssh/id_rsa.pub
+      no_log: true
       
+    
+    - name: Validate the sudoers file before saving
+      when:
+        - ansible_facts['distribution'] == "CentOS"
+        - ansible_facts['distribution_major_version'] == "8"
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^# %wheel        ALL=(ALL)       NOPASSWD: ALL'
+        line: '%wheel        ALL=(ALL)       NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -cf %s
+    
+    - name: Validate the sudoers file before saving
+      when:
+        - ansible_facts['distribution'] == "Ubuntu"
+        - ansible_facts['distribution_major_version'] == "20"
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^# %wheel        ALL=(ALL)       NOPASSWD: ALL'
+        line: '%sudo        ALL=(ALL)       NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -cf %s

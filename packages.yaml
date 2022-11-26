@@ -1,10 +1,12 @@
 ---
 - name: Install and Update Packages
-  hosts: webserver
+  hosts: 
+    - webserver
+    - database
   gather_facts: yes
   become: yes
   tasks: 
-    - name: Update Packages
+    - name: Update Packages on webserver (CentOS8)
       when: ansible_facts["pkg_mgr"] ==  "dnf"
       dnf:
         name: "*"
@@ -26,5 +28,12 @@
           - curl
           - wget
           - git
+          - python2-PyMySQL
+        state: latest
+
+    - name: Update Packages on database (Ubuntu)
+      when: ansible_facts["pkg_mgr"] == "apt"
+      apt:
+        name: "*"
         state: latest
     
