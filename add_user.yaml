@@ -37,7 +37,7 @@
       no_log: true
       
     
-    - name: Validate the sudoers file before saving
+    - name: Save file for sudoers
       when:
         - ansible_facts['distribution'] == "CentOS"
         - ansible_facts['distribution_major_version'] == "8"
@@ -48,16 +48,6 @@
         line: '%wheel        ALL=(ALL)       NOPASSWD: ALL'
         validate: /usr/sbin/visudo -cf %s
     
-    - name: Validate the sudoers file before saving
-      when:
-        - ansible_facts['distribution'] == "Ubuntu"
-        - ansible_facts['distribution_major_version'] == "20"
-      lineinfile:
-        path: /etc/sudoers
-        state: present
-        regexp: '^# %wheel        ALL=(ALL)       NOPASSWD: ALL'
-        line: '%sudo        ALL=(ALL)       NOPASSWD: ALL'
-        validate: /usr/sbin/visudo -cf %s
 
          
 
