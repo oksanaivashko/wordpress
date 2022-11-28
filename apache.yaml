@@ -1,0 +1,20 @@
+---
+- name: Install Apache 
+  hosts: webserver
+  gather_facts: yes
+  tasks: 
+    - name: Install Apache
+      when: ansible_facts['pkg_mgr'] == "dnf"
+    #  when:
+    #      - ansible_facts['distribution'] == "CentOS"
+    #      - ansible_facts['distribution_major_version'] == "8"
+      dnf:
+        name: httpd
+        state: latest
+              
+    - name: Start & Enable Apache
+      when: ansible_facts['service_mgr'] == "systemd"
+      systemd:
+        name: httpd
+        state: started
+        enabled: yes

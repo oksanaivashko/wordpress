@@ -58,3 +58,16 @@
         regexp: '^# %wheel        ALL=(ALL)       NOPASSWD: ALL'
         line: '%sudo        ALL=(ALL)       NOPASSWD: ALL'
         validate: /usr/sbin/visudo -cf %s
+
+         
+
+# option to create systemd file 
+# - name: sudo without password for wheel group 
+#   copy: 
+#     content: '%wheel ALL=(ALL:ALL) NOPASSWD:ALL' 
+#     dest: /etc/sudoers.d/wheel_nopasswd 
+#     mode: 0440 
+# option adding a line in sudoers file 
+# NOTE: Fully quoted because of the ': ' on the line. See the Gotchas in the YAML docs. 
+
+ 

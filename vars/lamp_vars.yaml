@@ -27,8 +27,8 @@ mariadb_package_name:
   - mariadb-server
   - net-tools
   - python3-pymysql
-mariadb_service_name: MariaDB-client
-
+  
+mariadb_service_name: mariadb
 
 packages: 
   - dnf-utils

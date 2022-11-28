@@ -1,5 +1,5 @@
 ---
-- name: Manage user and secure firewalld on database
+- name: Manage mariadb and secure firewalld on database
   hosts: database 
   become: yes
   vars_files: vars/lamp_vars.yaml
@@ -24,29 +24,25 @@
         immediate: yes 
       notify: restart mariadb 
 
-#    - name: first make sure mariadb is installed
-#      shell: mariadb --version
-#      register: result
-#    - name: managing mariadb
-#      block:
-#        - name: adding database called wpdb
-#          mysql_db: 
-#            name: wpdb
-#            state: present
-#            login_unix_socket: /var/run/mysqld/mysqld.sock
-#    
-#    - name: adding user called wpuser
-#      mysql_user:
-#        name: wpuser
-#        state: present
-#        host: webserver
-#        priv: 'wpuser.wpdb:ALL' 
-#        login_unix_socket: /var/run/mysqld/mysqld.sock
-#        login_host: database
-#      when: result is succeeded
-#  handlers:
-#    - name: restart mariadb
-#      systemd:
-#        name: mariadb
-#        state: restarted
-#
+    - name: Managing mariadb
+      block:
+        - name: Adding database - wpdb
+          mysql_db: 
+            name: wpdb
+            state: present
+            login_unix_socket: /var/run/mysqld/mysqld.sock
+    
+    - name: Adding user - wpuser
+      mysql_user:
+        name: wpuser
+        state: present
+        host: webserver
+        priv: 'wpuser.wpdb:ALL' 
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_host: database
+      when: result is succeeded
+  handlers:
+    - name: restart mariadb
+      systemd:
+        name: mariadb
+        state: restarted

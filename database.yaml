@@ -31,19 +31,36 @@
         name: ''
         host_all: yes
         state: absent
-    
+ 
     - name: Create a new database with name 'wpdb'
       mysql_db:
         name: wpdb
         state: present
-        # login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_user: wpuser
+        login_password: "{{mysql_passwd}}"
+        login_host: 142.93.55.62
+        login_unix_socket: /run/mysqld/mysqld.sock
     
     - name: Create database user with name and password with all database privileges
       mysql_user:
         name: wpuser
-        password: "{{mysql_passwd}}"
+        login_user: wpuser
+        password: "{{ mysql_passwd }}"
+        login_password: "{{ mysql_passwd }}"
+        host: 10.116.0.4
         priv: '*.*:ALL,GRANT'
         state: present
-        host: 142.93.55.62
-        login_host: 137.184.109.165
-        # login_unix_socket: /var/run/mysqld/mysqld.sock
+        login_host: 10.116.0.3
+        login_unix_socket: /run/mysqld/mysqld.sock
+
+#  sudo apt-get purge mariadb* delete all mariadb and databases
+# CREATE DATABASE wpdb;
+# CREATE USER 'wpuser'@'host_ip' IDENTIFIED BY 'passwd';
+# GRANT ALL PRIVILEGES ON *.* TO 'wpuser'@'host_ip' IDENTIFIED BY 'passwd';
+#  GRANT ALL PRIVILEGES ON *.* TO 'wpuser'@'host_ip' IDENTIFIED BY 'passwd' WITH GRANT OPTION;
+# FLUSH PRIVILEGES;
+# use wpdb;
+# SELECT user FROM user;
+# select user, password, host from mysql.user;
+# SELECT User, Host FROM mysql.user;
+# SHOW DATABASES;
