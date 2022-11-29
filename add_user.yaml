@@ -35,18 +35,6 @@
       with_file:
         - /home/ansible/.ssh/id_rsa.pub
       no_log: true
-      
-    
-    - name: Save file for sudoers
-      when:
-        - ansible_facts['distribution'] == "CentOS"
-        - ansible_facts['distribution_major_version'] == "8"
-      lineinfile:
-        path: /etc/sudoers
-        state: present
-        regexp: '^# %wheel        ALL=(ALL)       NOPASSWD: ALL'
-        line: '%wheel        ALL=(ALL)       NOPASSWD: ALL'
-        validate: /usr/sbin/visudo -cf %s
     
 
          
