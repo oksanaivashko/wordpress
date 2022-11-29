@@ -31,10 +31,11 @@
         shell: /bin/bash
 
     - name: Set up authorized key for ansible user
-      authorized_key: user=ansible key="{{ item }}"
+      authorized_key: 
+        user=ansible 
+        key="{{ item }}"
       with_file:
         - /home/ansible/.ssh/id_rsa.pub
-      no_log: true
     
 
          
