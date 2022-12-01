@@ -38,8 +38,7 @@
         - /home/ansible/.ssh/id_rsa.pub
     
 
-         
-
+      
 # option to create systemd file 
 # - name: sudo without password for wheel group 
 #   copy: 

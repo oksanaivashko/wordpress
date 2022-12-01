@@ -35,6 +35,6 @@
       when: ansible_facts["pkg_mgr"] == "apt"
       apt:
         name: "*"
-        state: latest
+        state: fixed
     
     

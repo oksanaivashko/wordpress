@@ -5,9 +5,9 @@ all:
     dev:
       hosts:
         webserver:
-          ansible_host: 10.116.0.3
+          ansible_host: 10.116.0.4
 
     db:
       hosts:
         database:
-          ansible_host: 10.116.0.4
+          ansible_host: 10.116.0.3

@@ -26,7 +26,9 @@ php_packages:
 mariadb_package_name: 
   - mariadb-server
   - net-tools
+  - python3
   - python3-pymysql
+  - python3-pip
   
 mariadb_service_name: mariadb
 

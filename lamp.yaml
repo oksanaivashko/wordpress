@@ -1,7 +1,7 @@
 ---
 - name: Setup LAMP and Install Wordpress
-  hosts: webserver
-  gather_facts: yes
+  hosts: all
+  gather_facts: "{{ facts }}"
   vars_files: vars/lamp_vars.yaml
   become: yes 
   tasks:
@@ -64,7 +64,7 @@
         - ansible_facts['distribution'] == "CentOS"
         - ansible_facts['distribution_major_version'] == "8"
       #when: ansible_facts['pkg_mgr'] == "dnf"
-      dnf:
-        name: "{{ mariadb_service_name }}"
+      yum:
+        name: "{{ mariadb_package_name }}"
         state: latest
         enabled: yes

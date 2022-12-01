@@ -13,12 +13,6 @@
         name: "{{ mariadb_package_name }}"
         state: present
 
-    - name: "Install ansible python3 mysql dependency"
-      when: ansible_facts['distribution'] == "Ubuntu"
-      apt:
-        name: python3-mysqldb
-        state: present
-
     - name: Start & Enable MariaDB
       when: ansible_facts['service_mgr'] == "systemd"
       systemd:
@@ -26,41 +20,51 @@
         state: started
         enabled: yes
       
-    - name: Removes all anonymous user accounts
-      mysql_user:
-        name: ''
-        host_all: yes
-        state: absent
+    
  
     - name: Create a new database with name 'wpdb'
       mysql_db:
         name: wpdb
         state: present
-        login_user: wpuser
-        login_password: "{{mysql_passwd}}"
-        login_host: 142.93.55.62
-        login_unix_socket: /run/mysqld/mysqld.sock
-    
-    - name: Create database user with name and password with all database privileges
-      mysql_user:
-        name: wpuser
-        login_user: wpuser
-        password: "{{ mysql_passwd }}"
-        login_password: "{{ mysql_passwd }}"
-        host: 10.116.0.4
-        priv: '*.*:ALL,GRANT'
-        state: present
-        login_host: 10.116.0.3
-        login_unix_socket: /run/mysqld/mysqld.sock
 
-#  sudo apt-get purge mariadb* delete all mariadb and databases
-# CREATE DATABASE wpdb;
-# CREATE USER 'wpuser'@'host_ip' IDENTIFIED BY 'passwd';
-# GRANT ALL PRIVILEGES ON *.* TO 'wpuser'@'host_ip' IDENTIFIED BY 'passwd';
-#  GRANT ALL PRIVILEGES ON *.* TO 'wpuser'@'host_ip' IDENTIFIED BY 'passwd' WITH GRANT OPTION;
-# FLUSH PRIVILEGES;
-# use wpdb;
-# SELECT user FROM user;
-# select user, password, host from mysql.user;
-# SELECT User, Host FROM mysql.user;
-# SHOW DATABASES;
+        
+    - name: Removes all anonymous user accounts
+      mysql_user:
+        name: ''
+        host_all: yes
+        state: absent
+
+    
+    - name: create a database user
+      mysql_user:
+        name: wpuser 
+        password: "{{ mysql_passwd }}"
+        priv: '*.*:ALL'
+        state: present
+
+    - name: Managing mariadb
+      block:
+        - name: Adding database - wpdb
+          mysql_db: 
+            name: wpdb
+            priv: '*.*:ALL'
+            host: 161.35.117.189
+            login_unix_socket: socket=/var/run/mysqld/mysqld.sock
+            state: present
+              
+            
+        - name: Adding user - wpuser 
+          mysql_user:
+            name: wpuser
+            state: present
+            host: webserver
+            priv: 'wpuser.wpdb:ALL' 
+            login_unix_socket: /var/run/mysqld/mysqld.sock
+            login_host: database
+          when: result is succeeded
+
+        - name: restart mariadb
+          systemd:
+            name: mariadb
+            state: restarted
+    
