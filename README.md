@@ -15,9 +15,9 @@
 - Have ssh authorization for your wordpress server from your laptop and   for database server the ssh authorization should be from your wordpress server.
 - ssh-keygen in your wordpress server and add your public key when you are creating your database server.
 
-- Webserver use OS CentOS8
+- Webserver OS - CentOS8
 
-- Database use OS Ubuntu20
+- Database OS - Ubuntu20
 
 # Installation
 
@@ -31,3 +31,4 @@
 
 
 
+![Screenshot 2022-12-07 134117](https://user-images.githubusercontent.com/108756145/206472701-bd7650b5-e9c9-4768-b42a-5e91d75f348f.jpg)
